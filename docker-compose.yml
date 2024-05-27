@@ -2,8 +2,7 @@ version: '3.9'
 
 services:
   postgres-container:
-    image: postgis:latest
-    restart: always
+    image: kartoza/postgis:latest
     container_name: postgres-container-sensor
     environment:
       POSTGRES_USER: postgres
@@ -18,9 +17,8 @@ services:
 
   spring-boot-container:
     build:
-      context: ./path/to/your/spring/boot/project
-    restart: always
-    container_name: spring-boot-container
+      context: ./SensorApp
+      dockerfile: Dockerfile
     environment:
       spring.datasource.url: jdbc:postgresql://postgres-container:5432/sensor
       spring.datasource.username: postgres
@@ -28,10 +26,12 @@ services:
       security.jwt.secret-key: 3cfa76ef14937c1c0ea519f8fc057a80fcd04a7420f8e8bcd0a7567c272e007b
     ports:
       - "8080:8080"
+    volumes:
+      - /h/IT/Java/Проэкт/SensorApp/target:/sensorapp
     networks:
       - delivery-network
     depends_on:
-      - postgres-container-sensor
+      - postgres-container
 
 volumes:
   db_data:

@@ -2,7 +2,7 @@
 
 1. Зайдите в деректорию с файлам ' docker-compose.yml ' запустите терминал и введите команду.
 ```
-    docker-compose up quick-solution-postgres-container -d
+    docker-compose up -d
 ```
 2. Запустите браузер и перейдите по адресу.
 ```
