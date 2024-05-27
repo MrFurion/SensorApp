@@ -17,7 +17,6 @@ import org.springframework.validation.BindingResult;
 
 import java.lang.reflect.Method;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 
@@ -28,11 +27,12 @@ import java.util.Optional;
 public class AdminServiceImpl implements AdminService {
     private final ValidationService validationService;
     private final SensorRepository sensorRepository;
+
     @Transactional
-    public Sensor saveSensor(SensorDto sensorDto){
+    public Sensor saveSensor(SensorDto sensorDto) {
 
         BindingResult bindingResult = validationService.validate(sensorDto);
-        if (bindingResult.hasErrors()){
+        if (bindingResult.hasErrors()) {
             throw new ValidationException("Error of validation" + bindingResult.getAllErrors());
         }
 
@@ -52,16 +52,17 @@ public class AdminServiceImpl implements AdminService {
     public Page<Sensor> showAllSensor(Pageable pageable) {
         return sensorRepository.findAll(pageable);
     }
-    public Page<Sensor> searchSensor(String keyWord, Pageable pageable){
+
+    public Page<Sensor> searchSensor(String keyWord, Pageable pageable) {
         return sensorRepository.findByNameContainingIgnoreCaseOrModelContainingIgnoreCase(keyWord, keyWord, pageable);
     }
 
     @Transactional
-    public Sensor updateSensor(SensorDto sensorDto, Long id){
+    public Sensor updateSensor(SensorDto sensorDto, Long id) {
 
         Optional<Sensor> sensorOptional = sensorRepository.findById(id);
 
-        Map<String,String> updateSensor = new HashMap<>();
+        Map<String, String> updateSensor = new HashMap<>();
         updateSensor.put("Name", sensorDto.getName());
         updateSensor.put("Model", sensorDto.getModel());
         updateSensor.put("Unit", sensorDto.getUnit());
@@ -69,7 +70,7 @@ public class AdminServiceImpl implements AdminService {
         updateSensor.put("Location", sensorDto.getLocation());
         updateSensor.put("Description", sensorDto.getDescription());
 
-        if (sensorOptional.isPresent()){
+        if (sensorOptional.isPresent()) {
 
             Sensor sensor = sensorOptional.get();
 
@@ -84,12 +85,13 @@ public class AdminServiceImpl implements AdminService {
                 updateField(sensor, "RangeTo", sensorDto.getRangeDto().getRangeTo());
             }
 
-            return  sensorRepository.save(sensor);
-        }else {
+            return sensorRepository.save(sensor);
+        } else {
             log.error("Sensor not found " + id);
             throw new SensorNotFoundException("Sensor not found " + id);
         }
     }
+
     private void updateField(Sensor sensor, String fieldName, Object value) {
         try {
             if (value != null) {
@@ -101,12 +103,12 @@ public class AdminServiceImpl implements AdminService {
             e.printStackTrace();
         }
     }
+
     @Transactional
-    public void deleteSensor(Long id){
+    public void deleteSensor(Long id) {
         if (!sensorRepository.existsById(id)) {
             throw new SensorNotFoundException("Sensor not found with id: " + id);
         }
         sensorRepository.deleteById(id);
     }
-
 }
