@@ -2,6 +2,7 @@ package by.trubetcki.sensorapp.controller;
 
 import by.trubetcki.sensorapp.dto.LoginUserDto;
 import by.trubetcki.sensorapp.dto.RegisterUserDto;
+import by.trubetcki.sensorapp.dto.ResponseRegisterDto;
 import by.trubetcki.sensorapp.models.User;
 import by.trubetcki.sensorapp.services.AuthenticationService;
 import by.trubetcki.sensorapp.services.JwtService;
@@ -38,6 +39,7 @@ public class AuthenticationControllerTest {
     private RegisterUserDto registerUserDto;
     private LoginUserDto loginUserDto;
     private User user;
+    private ResponseRegisterDto responseRegisterDto;
     private LoginResponse loginResponse;
 
     @BeforeEach
@@ -60,18 +62,20 @@ public class AuthenticationControllerTest {
         loginResponse = new LoginResponse();
         loginResponse.setToken("test-token");
         loginResponse.setExpiresIn(3600L);
+
+        responseRegisterDto = new ResponseRegisterDto();
+        responseRegisterDto.setUsername("testuser");
     }
 
     @Test
     void testRegister_Success() throws Exception {
-        when(authenticationService.signup(any(RegisterUserDto.class))).thenReturn(user);
+        when(authenticationService.signup(any(RegisterUserDto.class))).thenReturn(responseRegisterDto);
 
         mockMvc.perform(post("/auth/signup")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(registerUserDto)))
                 .andExpect(status().isOk())
-                .andExpect(jsonPath("$.username").value("testuser"))
-                .andExpect(jsonPath("$.email").value("testuser@example.com"));
+                .andExpect(jsonPath("$.username").value("testuser"));
     }
 
     @Test

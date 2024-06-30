@@ -6,7 +6,7 @@ import by.trubetcki.sensorapp.exception.SensorNotFoundException;
 import by.trubetcki.sensorapp.exception.ValidationException;
 import by.trubetcki.sensorapp.models.Sensor;
 import by.trubetcki.sensorapp.repositories.SensorRepository;
-import by.trubetcki.sensorapp.services.impl.AdminServiceImpl;
+import by.trubetcki.sensorapp.services.impl.SensorServiceImpl;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.InjectMocks;
@@ -34,7 +34,7 @@ class AdminServiceImplTest {
     private SensorRepository sensorRepository;
 
     @InjectMocks
-    private AdminServiceImpl adminService;
+    private SensorServiceImpl adminService;
 
     private SensorDto sensorDto;
     private Sensor sensor;
@@ -44,13 +44,13 @@ class AdminServiceImplTest {
         MockitoAnnotations.openMocks(this);
 
         RangeDto rangeDto = new RangeDto();
-        rangeDto.setRangeFrom(1L);
-        rangeDto.setRangeTo(100L);
+        rangeDto.setFrom(1L);
+        rangeDto.setTo(100L);
 
         sensorDto = new SensorDto();
         sensorDto.setName("TestSensor");
         sensorDto.setModel("T1000");
-        sensorDto.setRangeDto(rangeDto);
+        sensorDto.setRange(rangeDto);
         sensorDto.setType("Temperature");
         sensorDto.setUnit("Celsius");
         sensorDto.setLocation("Building 1");
@@ -72,7 +72,7 @@ class AdminServiceImplTest {
         when(validationService.validate(any(SensorDto.class))).thenReturn(mock(BindingResult.class));
         when(sensorRepository.save(any(Sensor.class))).thenReturn(sensor);
 
-        Sensor savedSensor = adminService.saveSensor(sensorDto);
+        Sensor savedSensor = adminService.save(sensorDto);
 
         assertNotNull(savedSensor);
         assertEquals("TestSensor", savedSensor.getName());
@@ -85,7 +85,7 @@ class AdminServiceImplTest {
         when(bindingResult.hasErrors()).thenReturn(true);
         when(validationService.validate(any(SensorDto.class))).thenReturn(bindingResult);
 
-        assertThrows(ValidationException.class, () -> adminService.saveSensor(sensorDto));
+        assertThrows(ValidationException.class, () -> adminService.save(sensorDto));
     }
 
     @Test
@@ -94,7 +94,7 @@ class AdminServiceImplTest {
         Page<Sensor> page = new PageImpl<>(Collections.singletonList(sensor));
         when(sensorRepository.findAll(any(Pageable.class))).thenReturn(page);
 
-        Page<Sensor> result = adminService.showAllSensor(pageable);
+        Page<Sensor> result = adminService.show(pageable);
 
         assertNotNull(result);
         assertEquals(1, result.getTotalElements());
@@ -107,7 +107,7 @@ class AdminServiceImplTest {
         Page<Sensor> page = new PageImpl<>(Collections.singletonList(sensor));
         when(sensorRepository.findByNameContainingIgnoreCaseOrModelContainingIgnoreCase(anyString(), anyString(), any(Pageable.class))).thenReturn(page);
 
-        Page<Sensor> result = adminService.searchSensor("Test", pageable);
+        Page<Sensor> result = adminService.search("Test", pageable);
 
         assertNotNull(result);
         assertEquals(1, result.getTotalElements());
@@ -119,7 +119,7 @@ class AdminServiceImplTest {
         when(sensorRepository.findById(anyLong())).thenReturn(Optional.of(sensor));
         when(sensorRepository.save(any(Sensor.class))).thenReturn(sensor);
 
-        Sensor updatedSensor = adminService.updateSensor(sensorDto, 1L);
+        Sensor updatedSensor = adminService.update(sensorDto, 1L);
 
         assertNotNull(updatedSensor);
         assertEquals("TestSensor", updatedSensor.getName());
@@ -131,7 +131,7 @@ class AdminServiceImplTest {
     void updateSensor_NotFound() {
         when(sensorRepository.findById(anyLong())).thenReturn(Optional.empty());
 
-        assertThrows(SensorNotFoundException.class, () -> adminService.updateSensor(sensorDto, 1L));
+        assertThrows(SensorNotFoundException.class, () -> adminService.update(sensorDto, 1L));
     }
 
     @Test
@@ -139,7 +139,7 @@ class AdminServiceImplTest {
         when(sensorRepository.existsById(anyLong())).thenReturn(true);
         doNothing().when(sensorRepository).deleteById(anyLong());
 
-        adminService.deleteSensor(1L);
+        adminService.delete(1L);
 
         verify(sensorRepository, times(1)).existsById(anyLong());
         verify(sensorRepository, times(1)).deleteById(anyLong());
@@ -149,6 +149,6 @@ class AdminServiceImplTest {
     void deleteSensor_NotFound() {
         when(sensorRepository.existsById(anyLong())).thenReturn(false);
 
-        assertThrows(SensorNotFoundException.class, () -> adminService.deleteSensor(1L));
+        assertThrows(SensorNotFoundException.class, () -> adminService.delete(1L));
     }
 }
