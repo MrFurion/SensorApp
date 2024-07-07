@@ -1,8 +1,6 @@
 package by.trubetcki.sensorapp.util;
 
-import by.trubetcki.sensorapp.annotations.ValidType;
 import by.trubetcki.sensorapp.annotations.ValidUnit;
-import by.trubetcki.sensorapp.models.MeasurementType;
 import by.trubetcki.sensorapp.models.MeasurementUnit;
 import by.trubetcki.sensorapp.repositories.MeasurementUnitRepository;
 import jakarta.validation.ConstraintValidator;

@@ -3,7 +3,6 @@ package by.trubetcki.sensorapp.services;
 import by.trubetcki.sensorapp.dto.RangeDto;
 import by.trubetcki.sensorapp.dto.SensorDto;
 import by.trubetcki.sensorapp.exception.SensorNotFoundException;
-import by.trubetcki.sensorapp.exception.ValidationException;
 import by.trubetcki.sensorapp.models.Sensor;
 import by.trubetcki.sensorapp.repositories.SensorRepository;
 import by.trubetcki.sensorapp.services.impl.SensorServiceImpl;
@@ -16,7 +15,6 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
-import org.springframework.validation.BindingResult;
 
 import java.util.Collections;
 import java.util.Optional;
@@ -26,9 +24,6 @@ import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.*;
 
 class AdminServiceImplTest {
-
-    @Mock
-    private ValidationService validationService;
 
     @Mock
     private SensorRepository sensorRepository;
@@ -69,7 +64,7 @@ class AdminServiceImplTest {
 
     @Test
     void saveSensor_Success() {
-        when(validationService.validate(any(SensorDto.class))).thenReturn(mock(BindingResult.class));
+        sensorDto.setName("TestSensor");
         when(sensorRepository.save(any(Sensor.class))).thenReturn(sensor);
 
         Sensor savedSensor = adminService.save(sensorDto);
@@ -79,14 +74,6 @@ class AdminServiceImplTest {
         verify(sensorRepository, times(1)).save(any(Sensor.class));
     }
 
-    @Test
-    void saveSensor_ValidationFails() {
-        BindingResult bindingResult = mock(BindingResult.class);
-        when(bindingResult.hasErrors()).thenReturn(true);
-        when(validationService.validate(any(SensorDto.class))).thenReturn(bindingResult);
-
-        assertThrows(ValidationException.class, () -> adminService.save(sensorDto));
-    }
 
     @Test
     void showAllSensor() {

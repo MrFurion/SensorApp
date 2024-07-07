@@ -2,18 +2,15 @@ package by.trubetcki.sensorapp.services.impl;
 
 import by.trubetcki.sensorapp.dto.SensorDto;
 import by.trubetcki.sensorapp.exception.SensorNotFoundException;
-import by.trubetcki.sensorapp.exception.ValidationException;
 import by.trubetcki.sensorapp.models.Sensor;
 import by.trubetcki.sensorapp.repositories.SensorRepository;
 import by.trubetcki.sensorapp.services.SensorService;
-import by.trubetcki.sensorapp.services.ValidationService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import org.springframework.validation.BindingResult;
 import org.springframework.validation.annotation.Validated;
 
 import java.util.Optional;
@@ -23,7 +20,7 @@ import java.util.Optional;
 @Transactional(readOnly = true)
 @Slf4j
 public class SensorServiceImpl implements SensorService {
-    private final ValidationService validationService;
+
     private final SensorRepository sensorRepository;
 
     @Transactional
