@@ -10,13 +10,11 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 
-import java.util.stream.Collectors;
-
 import static org.junit.jupiter.api.Assertions.*;
 
 @DataJpaTest
 @PropertySource("classpath:test.properties")
-public class SensorRepositoryTest {
+class SensorRepositoryTest {
 
     @Autowired
     private SensorRepository sensorRepository;
@@ -31,15 +29,17 @@ public class SensorRepositoryTest {
         sensor.setModel("t1000");
         sensor.setRangeFrom(2L);
         sensor.setRangeTo(3L);
-        sensor.setUnit("unittest");
+        sensor.setType("Pressure");
+        sensor.setUnit("%");
         sensor.setDescription("for kitcentest");
 
         sensor2 = new Sensor();
         sensor2.setName("testsensor2");
         sensor2.setModel("t2000");
+        sensor2.setType("Pressure");
         sensor2.setRangeFrom(5L);
         sensor2.setRangeTo(10L);
-        sensor2.setUnit("unit2");
+        sensor2.setUnit("%");
         sensor2.setDescription("description2");
 
         sensorRepository.save(sensor);

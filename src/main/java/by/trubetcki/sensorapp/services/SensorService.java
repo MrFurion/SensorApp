@@ -5,27 +5,30 @@ import by.trubetcki.sensorapp.models.Sensor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 
-public interface AdminService {
+/**
+ * Service interface for managing sensors.
+ */
+public interface SensorService {
     /**
      * Create new sensor with use data of SensorDto.
      *
      * @param sensorDto data of sensor
      */
-    Sensor saveSensor(SensorDto sensorDto);
+    Sensor save(SensorDto sensorDto);
 
     /**
      * Find all sensors
      *
      * @return List of sensors
      */
-    Page<Sensor> showAllSensor(Pageable pageable);
+    Page<Sensor> show(Pageable pageable);
 
     /**
      * Delete sensor by him id.
      *
      * @param id id of sensor
      */
-    void deleteSensor(Long id);
+    void delete(Long id);
 
     /**
      * Update sensor by id.
@@ -34,7 +37,7 @@ public interface AdminService {
      * @param id id of sensor
      * @return updated sensor
      */
-    Sensor updateSensor(SensorDto sensorDto, Long id);
+    Sensor update(SensorDto sensorDto, Long id);
 
     /**
      * Search sensor by keys word of name or model
@@ -43,5 +46,5 @@ public interface AdminService {
      * @param pageable for pagination
      * @return
      */
-    Page<Sensor> searchSensor(String keyWord, Pageable pageable);
+    Page<Sensor> search(String keyWord, Pageable pageable);
 }

@@ -2,7 +2,7 @@ version: '3.9'
 
 services:
   postgres-container:
-    image: kartoza/postgis:latest
+    image: postgres:12.1-alpine
     container_name: postgres-container-sensor
     environment:
       POSTGRES_USER: postgres
@@ -17,17 +17,36 @@ services:
 
   spring-boot-container:
     build:
-      context: ./SensorApp
+      context: .
       dockerfile: Dockerfile
     environment:
-      spring.datasource.url: jdbc:postgresql://postgres-container:5432/sensor
-      spring.datasource.username: postgres
-      spring.datasource.password: postgres
-      security.jwt.secret-key: 3cfa76ef14937c1c0ea519f8fc057a80fcd04a7420f8e8bcd0a7567c272e007b
+      - spring.datasource.url=jdbc:postgresql://postgres-container:5432/sensor
+      - spring.datasource.username=postgres
+      - spring.datasource.password=postgres
+      - spring.flyway.enabled=true
+      - spring.flyway.baseline-on-migrate=true
     ports:
       - "8080:8080"
+    networks:
+      - delivery-network
+    depends_on:
+      - postgres-container
+
+  flyway-migrate-dmp:
+    image: flyway/flyway:7.7.0
     volumes:
-      - /h/IT/Java/Проэкт/SensorApp/target:/sensorapp
+      - ./migrations/dmp:/flyway/sql
+    command: -url=jdbc:postgresql://postgres-container:5432/dmp?ssl=require -user=postgres -password=postgres -connectRetries=60 migrate
+    networks:
+      - delivery-network
+    depends_on:
+      - postgres-container
+
+  flyway-migrate-lsm:
+    image: flyway/flyway:7.7.0
+    volumes:
+      - ./migrations/lsm:/flyway/sql
+    command: -url=jdbc:postgresql://postgres-container:5432/lsm?ssl=require -user=postgres -password=postgres -connectRetries=60 migrate
     networks:
       - delivery-network
     depends_on:

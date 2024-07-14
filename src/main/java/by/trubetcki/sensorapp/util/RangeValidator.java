@@ -16,6 +16,9 @@ public class RangeValidator implements ConstraintValidator<ValidRange, RangeDto>
         if (rangeDto == null) {
             return true;
         }
-        return rangeDto.getRangeTo() > rangeDto.getRangeFrom();
+        if (rangeDto.getFrom() == null || rangeDto.getTo() == null) {
+            return false;
+        }
+        return rangeDto.getTo() > rangeDto.getFrom();
     }
 }

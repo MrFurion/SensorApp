@@ -2,6 +2,7 @@ package by.trubetcki.sensorapp.controller;
 
 import by.trubetcki.sensorapp.dto.LoginUserDto;
 import by.trubetcki.sensorapp.dto.RegisterUserDto;
+import by.trubetcki.sensorapp.dto.ResponseRegisterDto;
 import by.trubetcki.sensorapp.models.User;
 import by.trubetcki.sensorapp.services.AuthenticationService;
 import by.trubetcki.sensorapp.services.JwtService;
@@ -30,14 +31,14 @@ public class AuthenticationController {
     @Operation(summary = "Register new user")
     @PostMapping("/signup")
     public ResponseEntity<?> register(@Validated @RequestBody RegisterUserDto registerUserDto,
-                                      BindingResult bindingResult) {
+                                                        BindingResult bindingResult) {
         if(bindingResult.hasErrors()){
             for (ObjectError error : bindingResult.getAllErrors()) {
                 log.error("Validation errors occurred while processing user registration: - " + error.getDefaultMessage());
             }
             return ResponseEntity.badRequest().body(bindingResult.getAllErrors());
         }
-        User registeredUser = authenticationService.signup(registerUserDto);
+        ResponseRegisterDto registeredUser = authenticationService.signup(registerUserDto);
         return ResponseEntity.ok(registeredUser);
     }
 

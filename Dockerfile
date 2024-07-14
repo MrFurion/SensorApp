@@ -1,9 +1,20 @@
-FROM openjdk:17-jdk-slim
+FROM maven:3.8.3-openjdk-17 AS builder
 
-WORKDIR /sensorapp/SensorApp
+WORKDIR /build
 
-ARG JAR_FILE=target/*.jar
+COPY mvnw pom.xml ./
+COPY .mvn/ .mvn
+RUN ./mvnw dependency:go-offline
 
-COPY ${JAR_FILE} app.jar
+COPY ./src ./src
+RUN ./mvnw clean install -DskipTests
 
-CMD ["java", "-jar", "app.jar"]
+FROM eclipse-temurin:17-jre-alpine
+
+WORKDIR /opt/app
+
+COPY --from=builder /build/target/*.jar /opt/app/app.jar
+
+EXPOSE 8080
+
+ENTRYPOINT ["java", "-jar", "/opt/app/app.jar"]

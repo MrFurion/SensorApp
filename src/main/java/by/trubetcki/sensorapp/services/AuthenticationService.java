@@ -2,6 +2,7 @@ package by.trubetcki.sensorapp.services;
 
 import by.trubetcki.sensorapp.dto.LoginUserDto;
 import by.trubetcki.sensorapp.dto.RegisterUserDto;
+import by.trubetcki.sensorapp.dto.ResponseRegisterDto;
 import by.trubetcki.sensorapp.models.User;
 
 public interface AuthenticationService {
@@ -11,7 +12,7 @@ public interface AuthenticationService {
      * @param input the registration details of the user
      * @return the registered user
      */
-    User signup(RegisterUserDto input);
+    ResponseRegisterDto signup(RegisterUserDto input);
 
     /**
      * Authenticates a user based on their username and password.

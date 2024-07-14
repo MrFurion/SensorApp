@@ -2,6 +2,7 @@ package by.trubetcki.sensorapp.services.impl;
 
 import by.trubetcki.sensorapp.dto.LoginUserDto;
 import by.trubetcki.sensorapp.dto.RegisterUserDto;
+import by.trubetcki.sensorapp.dto.ResponseRegisterDto;
 import by.trubetcki.sensorapp.enums.Roles;
 import by.trubetcki.sensorapp.models.User;
 import by.trubetcki.sensorapp.repositories.UserRepository;
@@ -12,7 +13,6 @@ import org.springframework.security.authentication.UsernamePasswordAuthenticatio
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-
 
 @Service
 @RequiredArgsConstructor
@@ -25,14 +25,18 @@ public class AuthenticationServiceImpl implements AuthenticationService {
     private final AuthenticationManager authenticationManager;
 
     @Transactional
-    public User signup(RegisterUserDto input) {
+    public ResponseRegisterDto signup(RegisterUserDto input) {
         User user = new User();
         user.setUsername(input.getUsername());
         user.setEmail(input.getEmail());
         user.setPassword(passwordEncoder.encode(input.getPassword()));
         user.setRole(Roles.VIEWER.getRoleName());
+        userRepository.save(user);
 
-        return userRepository.save(user);
+        ResponseRegisterDto registerUserDto = new ResponseRegisterDto();
+        registerUserDto.setUsername(input.getUsername());
+
+        return registerUserDto;
     }
 
     public User authenticate(LoginUserDto input) {
