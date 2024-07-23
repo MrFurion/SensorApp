@@ -7,8 +7,8 @@ import lombok.Data;
 @Data
 @ValidRange
 public class RangeDto {
-    @NotNull(message = "From not should by empty")
+    @NotNull(message = "From should not be empty")
     Long from;
-    @NotNull(message = "To not should by empty")
+    @NotNull(message = "To should not be empty")
     Long to;
 }

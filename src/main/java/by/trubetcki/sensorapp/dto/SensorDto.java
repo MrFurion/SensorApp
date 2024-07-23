@@ -11,21 +11,21 @@ import lombok.Data;
 @Data
 public class SensorDto {
     private Long id;
-    @NotEmpty(message = "Name should by not empty")
-    @Size(min = 3, max = 30, message = "Name should by between 3 and 30 character")
+    @NotEmpty(message = "Name should not be empty")
+    @Size(min = 3, max = 30, message = "Name should be between 3 and 30 character")
     private String name;
-    @NotEmpty(message = "Model should by not empty")
-    @Size(min = 1, max = 15, message = "Model should by between 1 and 15 character")
+    @NotEmpty(message = "Model should not be empty")
+    @Size(min = 1, max = 15, message = "Model should be between 1 and 15 character")
     private String model;
     @Valid
     @NotNull
     private RangeDto range;
-    @ValidType(message = "Type should by Pressure, Voltage, Temperature, Humidity")
+    @ValidType(message = "Unknown type. Types allowed: Pressure, Voltage, Temperature, Humidity.")
     private String type;
-    @ValidUnit(message = "Unit should by bar, voltage, °С, %")
+    @ValidUnit(message = "Unknown unit. Unit allowed: bar, voltage, °С, %")
     private String unit;
-    @Size(min = 1, max = 40, message = "Location should by between 1 and 40 character")
+    @Size(min = 1, max = 40, message = "Location should be between 1 and 40 character")
     private String location;
-    @Size(min = 1, max = 200, message = "Description should by between 1 and 200 character")
+    @Size(min = 1, max = 200, message = "Description should be between 1 and 200 character")
     private String description;
 }
